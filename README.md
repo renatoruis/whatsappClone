@@ -1,3 +1,5 @@
 # WhatsApp Clone
 
-Estudos sobre ReactJS
+Projeto pessoal de estudos sobre ReactJS
+
+![ScreenShot](./screencapture-1.png)
