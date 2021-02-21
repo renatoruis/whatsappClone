@@ -2,7 +2,7 @@ const APIKEY = process.env.REACT_APP_APIKEY
 
 const firebaseConfig = {
   apiKey: APIKEY,
-  authDomain: "whatsappclone-lab.firebaseapp.com",
+  authDomain: "whatsapp-clone-ten.vercel.app",
   projectId: "whatsappclone-lab",
   storageBucket: "whatsappclone-lab.appspot.com",
   messagingSenderId: "288091732624",
