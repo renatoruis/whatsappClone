@@ -16,6 +16,7 @@ export default {
 
   Googlelogin: async () => {
     const provider = new firebase.auth.GoogleAuthProvider()
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     let result = await firebaseApp.auth().signInWithPopup(provider)
     return result
   },
