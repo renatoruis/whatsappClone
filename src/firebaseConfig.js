@@ -1,5 +1,5 @@
 export default {
-  apiKey: "process.env.APIKEY",
+  apiKey: process.env.APIKEY,
   authDomain: "whatsappclone-lab.firebaseapp.com",
   projectId: "whatsappclone-lab",
   storageBucket: "whatsappclone-lab.appspot.com",
