@@ -8,15 +8,14 @@ const firebaseApp = firebase.initializeApp(firebaseConfig)
 const db = firebaseApp.firestore()
 
 export default {
-  fbPopup: async () => {
-    const provider = new firebase.auth.FacebookAuthProvider()
-    let result = await firebaseApp.auth().signInWithPopup(provider)
-    return result
-  },
+  // fbPopup: async () => {
+  //   const provider = new firebase.auth.FacebookAuthProvider()
+  //   let result = await firebaseApp.auth().signInWithPopup(provider)
+  //   return result
+  // },
 
   Googlelogin: async () => {
     const provider = new firebase.auth.GoogleAuthProvider()
-    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     let result = await firebaseApp.auth().signInWithPopup(provider)
     return result
   },
@@ -80,19 +79,20 @@ export default {
           let chats = [...data.chats]
 
           chats.sort((a,b)=>{
-            if(a.lastMessageDate == undefined){
-              return 1
+            if(a.lastMessageDate === undefined){
+              return -1
             }
             if(b.lastMessageDate === undefined){
-              return 1
+              return -1
             }
+
             if(a.lastMessageDate.seconds < b.lastMessageDate.seconds){
               return 1;
             } else {
               return -1
             }
           })
-          setChatList(data.chats)
+          setChatList(chats)
         }
       }
     })
