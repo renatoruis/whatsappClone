@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import './ChatWindow.css'
-
+import Api from '../Api.js'
 import MessageItem from './MessageItem.js'
 import EmojiPicker from 'emoji-picker-react'
 
@@ -13,7 +13,8 @@ import SendIcon from '@material-ui/icons/Send';
 import MicIcon from '@material-ui/icons/Mic';
 
 
-export default ({user}) => {
+export default ({user, data}) => {
+
 
   const body = useRef()
 
@@ -27,30 +28,15 @@ export default ({user}) => {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [text, setText] = useState('');
   const [listening, setListening] = useState(false);
-  const [list, setList] = useState([
-    {author: 1, body: 'Mensagem teste 1'},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
-    {author: 1, body: 'Mensagem teste 2 Mensagem teste 2 '},
-    {author: 2, body: 'Mensagem teste 3 Mensagem teste 3 Mensagem teste 3 '},
+  const [list, setList] = useState([]);
+  const [users, setUsers] = useState([])
 
-  ]);
+  useEffect(()=>{
+    setList([])
+    let unsub = Api.onChatContent(data.chatId, setList, setUsers)
+    return unsub
+  }, [data.chatId])
+
 
   useEffect(()=>{
     if(body.current.scrollHeight > body.current.offsetHeight){
@@ -70,8 +56,19 @@ export default ({user}) => {
     setEmojiOpen(false)
   }
 
-  const handleSendClick = () => {
+  const handleOnKeyUp = (e) => {
+    console.log(e)
+    if(e.keyCode === 13){
+      handleSendClick()
+    }
+  }
 
+  const handleSendClick = () => {
+    if(text !== ''){
+      Api.sendMessage(data, user.id, 'text', text, users)
+      setText('')
+      setEmojiOpen(false)
+    }
   }
 
   const handleMicClick = () => {
@@ -96,8 +93,8 @@ export default ({user}) => {
     <div className="chatWindow">
       <div className="chatWindow--header">
         <div className="chatWindow-headerinfo">
-            <img className="chatWindow--avatar" src="https://static.toiimg.com/photo/76729750.cms" alt="" />
-            <div className="chatWindow--name"> Fulano </div>
+            <img className="chatWindow--avatar" src={data.image} alt="" />
+            <div className="chatWindow--name">{data.title}</div>
         </div>
         <div className="chatWindow--headerbuttons">
           <div className="chatWindow--btn">
@@ -156,6 +153,7 @@ export default ({user}) => {
               placeholder="Digite uma mensagem..."
               value={text}
               onChange={e=>setText(e.target.value)}
+              onKeyUp={handleOnKeyUp}
             />
           </div>
           <div className="chatWindow--pos">

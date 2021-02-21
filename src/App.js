@@ -17,9 +17,18 @@ export default () => {
 
   const [chatList, setChatList] = useState([])
   const [activeChat, setactiveChat] = useState({})
-  const [user, setUser] = useState({id: 'QV60ERlw9yQhzSGDU3VRI8Egv9V2', name: 'Renato Ruis', avatar: 'https://lh3.googleusercontent.com/a-/AOh14Gj5Z88BF6Z_-pgSxh5pFdPRqT4z54Piq65Co-9nqS0=s96-c'})
+  const [user, setUser] = useState(null)
 
   const [showNewChat, setshowNewChat] = useState(false)
+
+
+
+  useEffect(()=>{
+    if(user !== null){
+      let unsub = Api.onChatList(user.id, setChatList)
+      return unsub
+    }
+  }, [user])
 
   const handleNewChat = () => {
     setshowNewChat(true)
@@ -31,14 +40,15 @@ export default () => {
       name: u.displayName,
       avatar: u.photoURL
     }
-    console.log(u)
     await Api.addUser(newUser)
     setUser(newUser)
   }
 
+
   if(user === null){
     return (<Login onReceive={handleLoginData} />)
   }
+
 
   return (
 
@@ -86,7 +96,9 @@ export default () => {
       <div className="contentarea">
         {activeChat.chatId !== undefined &&
           <ChatWindow
-          user={user}/>
+          user={user}
+          data={activeChat}
+          />
         }
 
         {activeChat.chatId == undefined &&
